@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI-Powered Resume Builder — Build Your Dream Resume</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2563eb; --primary-dark: #1d4ed8; --accent: #06b6d4;
+      --bg: #f0f4ff; --card: #ffffff; --text: #0f172a;
+      --muted: #64748b; --border: #e2e8f0; --sidebar: #1e293b;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); }
+
+    /* NAVBAR */
+    nav {
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+    .nav-brand {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px; font-weight: 800;
+      color: var(--primary);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .nav-brand i { font-size: 18px; }
+    .nav-links { display: flex; align-items: center; gap: 6px; }
+    .nav-links a {
+      text-decoration: none; padding: 8px 16px;
+      border-radius: 8px; font-size: 14px; font-weight: 500;
+      color: var(--muted); transition: all 0.18s;
+    }
+    .nav-links a:hover { color: var(--primary); background: #f0f4ff; }
+    .nav-links .btn-nav {
+      background: var(--primary); color: white !important;
+      box-shadow: 0 2px 8px rgba(37,99,235,0.25);
+    }
+    .nav-links .btn-nav:hover { background: var(--primary-dark); }
+    .user-badge {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 14px; background: #f0f4ff;
+      border-radius: 100px; font-size: 13px; color: var(--primary); font-weight: 600;
+    }
+
+    /* FLASH */
+    .flash-zone { padding: 0 40px; margin-top: 16px; }
+    .flash { padding: 12px 18px; border-radius: 10px; font-size: 13.5px;
+              display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .flash.success { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .flash.danger  { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+    .flash.warning { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .flash.info    { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, var(--sidebar) 0%, #0f172a 100%);
+      padding: 60px 40px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute;
+      width: 500px; height: 500px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(37,99,235,0.20), transparent 70%);
+      right: -100px; top: -100px;
+    }
+    .hero-inner {
+      max-width: 700px; position: relative; z-index: 2;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(37,99,235,0.20); border: 1px solid rgba(37,99,235,0.30);
+      color: #93c5fd; padding: 6px 14px; border-radius: 100px;
+      font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
+      margin-bottom: 18px; text-transform: uppercase;
+    }
+    .hero h1 {
+      font-family: 'Syne', sans-serif; font-size: 42px;
+      font-weight: 800; color: white; line-height: 1.15;
+      letter-spacing: -1px; margin-bottom: 16px;
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero p { color: #94a3b8; font-size: 16px; line-height: 1.7; max-width: 520px; }
+    .hero-stats {
+      display: flex; gap: 32px; margin-top: 32px;
+    }
+    .stat { }
+    .stat-num { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: white; }
+    .stat-lbl { font-size: 12px; color: #64748b; }
+
+    /* MAIN LAYOUT */
+    .main-layout {
+      display: grid; grid-template-columns: 1fr 340px;
+      gap: 28px; max-width: 1100px; margin: 32px auto; padding: 0 40px;
+    }
+
+    /* FORM CARD */
+    .form-card {
+      background: white; border-radius: 18px; padding: 36px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+    .form-card h2 {
+      font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700;
+      color: var(--text); margin-bottom: 6px;
+    }
+    .form-card .sub { font-size: 13.5px; color: var(--muted); margin-bottom: 28px; }
+
+    .section-divider {
+      display: flex; align-items: center; gap: 10px;
+      margin: 26px 0 20px;
+    }
+    .section-divider span {
+      font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700;
+      color: var(--primary); text-transform: uppercase; letter-spacing: 0.8px;
+      white-space: nowrap;
+    }
+    .section-divider::before, .section-divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { margin-bottom: 18px; }
+    .form-group label {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px;
+    }
+    .form-group label i { font-size: 11px; color: var(--muted); }
+    .form-group input, .form-group textarea {
+      width: 100%; padding: 13px 14px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: 14px; font-family: 'DM Sans', sans-serif;
+      color: var(--text); background: #f8faff;
+      transition: all 0.2s; outline: none; resize: vertical;
+    }
+    .form-group textarea { min-height: 100px; }
+    .form-group input:focus, .form-group textarea:focus {
+      border-color: var(--primary); background: white;
+      box-shadow: 0 0 0 4px rgba(37,99,235,0.10);
+    }
+    .form-group .hint { font-size: 11.5px; color: var(--muted); margin-top: 4px; }
+    .btn-generate {
+      width: 100%; padding: 16px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white; border: none; border-radius: 12px;
+      font-size: 16px; font-family: 'Syne', sans-serif;
+      font-weight: 700; cursor: pointer; transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(37,99,235,0.35); margin-top: 8px;
+      letter-spacing: 0.3px;
+    }
+    .btn-generate:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(37,99,235,0.45); }
+
+    /* SIDEBAR */
+    .sidebar { display: flex; flex-direction: column; gap: 20px; }
+    .sidebar-card {
+      background: white; border-radius: 16px; padding: 24px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+    }
+    .sidebar-card h3 {
+      font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700;
+      color: var(--text); margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .sidebar-card h3 i { color: var(--primary); }
+    .template-list { display: flex; flex-direction: column; gap: 10px; }
+    .template-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px; border-radius: 10px;
+      border: 1.5px solid var(--border);
+      cursor: pointer; transition: all 0.18s;
+    }
+    .template-item:hover {
+      border-color: var(--primary); background: #f0f4ff;
+    }
+    .template-item.active { border-color: var(--primary); background: #eff6ff; }
+    .template-icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+    .template-info h4 { font-size: 13.5px; font-weight: 600; color: var(--text); }
+    .template-info p { font-size: 11.5px; color: var(--muted); margin-top: 1px; }
+    .tip-list { display: flex; flex-direction: column; gap: 10px; }
+    .tip-item {
+      display: flex; gap: 10px; align-items: flex-start;
+      font-size: 13px; color: var(--muted); line-height: 1.5;
+    }
+    .tip-item i { color: var(--accent); margin-top: 2px; font-size: 13px; }
+
+    @media(max-width: 900px) {
+      .main-layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .hero h1 { font-size: 28px; }
+      nav { padding: 0 20px; }
+      .hero, .flash-zone { padding-left: 20px; padding-right: 20px; }
+      .main-layout { padding: 0 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <div class="nav-brand"><i class="fa-solid fa-file-lines"></i> AI-Powered Resume Builder</div>
+    <div class="nav-links">
+      {% if user_name %}
+        <div class="user-badge"><i class="fa-solid fa-circle-user"></i> {{ user_name }}</div>
+        <a href="/logout">Logout</a>
+      {% else %}
+        <a href="/login">Login</a>
+        <a href="/register" class="btn-nav">Get Started</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <!-- FLASH MESSAGES -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-zone">
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">
+            <i class="fa-solid {% if category == 'success' %}fa-circle-check{% elif category == 'danger' %}fa-circle-xmark{% elif category == 'warning' %}fa-triangle-exclamation{% else %}fa-circle-info{% endif %}"></i>
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge"><i class="fa-solid fa-robot"></i> AI-Powered</div>
+      <h1>Build a Resume That<br><span>Gets You Hired</span></h1>
+      <p>Our AI instantly generates a professional summary tailored to your skills and experience. Fill in the form and download your polished PDF in seconds.</p>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-num">10K+</div><div class="stat-lbl">Resumes Created</div></div>
+        <div class="stat"><div class="stat-num">95%</div><div class="stat-lbl">Satisfaction Rate</div></div>
+        <div class="stat"><div class="stat-num">Free</div><div class="stat-lbl">Always</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-layout">
+    <!-- FORM -->
+    <div class="form-card">
+      <h2>Build Your Resume</h2>
+      <p class="sub">Fill in your details below — AI will craft your professional summary automatically.</p>
+
+      {% if not user_name %}
+        <div class="flash warning">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          Please <a href="/login" style="color:inherit;font-weight:700">login</a> before submitting your resume.
+        </div>
+      {% endif %}
+
+      <form action="/submit" method="POST">
+
+        <div class="section-divider"><span>Personal Info</span></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label><i class="fa-solid fa-user"></i> Full Name</label>
+            <input type="text" name="name" placeholder="e.g. Priya Sharma" required>
+          </div>
+          <div class="form-group">
+            <label><i class="fa-solid fa-phone"></i> Phone Number</label>
+            <input type="text" name="phone" placeholder="+91 98765 43210" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label><i class="fa-solid fa-envelope"></i> Email Address</label>
+            <input type="email" name="email" placeholder="you@email.com" required>
+          </div>
+          <div class="form-group">
+            <label><i class="fa-brands fa-linkedin"></i> LinkedIn URL <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+            <input type="text" name="linkedin" placeholder="linkedin.com/in/yourprofile">
+          </div>
+        </div>
+
+        <div class="section-divider"><span>Education</span></div>
+        <div class="form-group">
+          <label><i class="fa-solid fa-graduation-cap"></i> Education Details</label>
+          <textarea name="education" placeholder="B.Tech in Computer Science, XYZ University, 2020–2024&#10;GPA: 8.7/10" required></textarea>
+          <p class="hint">Include degree, institution, years, and any honors.</p>
+        </div>
+
+        <div class="section-divider"><span>Skills & Experience</span></div>
+        <div class="form-group">
+          <label><i class="fa-solid fa-code"></i> Skills</label>
+          <textarea name="skills" placeholder="Python, JavaScript, React, SQL, Machine Learning, Git..." required></textarea>
+          <p class="hint">Separate skills with commas for best results.</p>
+        </div>
+        <div class="form-group">
+          <label><i class="fa-solid fa-briefcase"></i> Work Experience</label>
+          <textarea name="experience" placeholder="Software Engineer Intern — Acme Corp (Jun 2023 – Aug 2023)&#10;• Built REST APIs using FastAPI and PostgreSQL&#10;• Improved load times by 40% via caching" required></textarea>
+          <p class="hint">Use bullet points for clarity. Start with most recent.</p>
+        </div>
+
+        <div class="section-divider"><span>Projects <span style="font-weight:400;font-size:11px;text-transform:none;letter-spacing:0">(optional)</span></span></div>
+        <div class="form-group">
+          <label><i class="fa-solid fa-folder-open"></i> Projects</label>
+          <textarea name="projects" placeholder="Resume Builder App — Built with Flask + SQLite&#10;• Integrated AI summary generation&#10;• Deployed on Heroku"></textarea>
+          <p class="hint">Highlight 1–3 key projects with impact metrics.</p>
+        </div>
+
+        <button type="submit" class="btn-generate">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Generate My Resume
+        </button>
+      </form>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-card">
+        <h3><i class="fa-solid fa-palette"></i> Templates</h3>
+        <div class="template-list">
+          <div class="template-item active">
+            <div class="template-icon" style="background:#eff6ff;color:#2563eb">
+              <i class="fa-solid fa-file-lines"></i>
+            </div>
+            <div class="template-info">
+              <h4>Professional</h4>
+              <p>Clean &amp; modern — most popular</p>
+            </div>
+          </div>
+          <div class="template-item">
+            <div class="template-icon" style="background:#f0fdf4;color:#16a34a">
+              <i class="fa-solid fa-briefcase"></i>
+            </div>
+            <div class="template-info">
+              <h4>Corporate</h4>
+              <p>Formal &amp; business-ready</p>
+            </div>
+          </div>
+          <div class="template-item">
+            <div class="template-icon" style="background:#fdf4ff;color:#9333ea">
+              <i class="fa-solid fa-laptop-code"></i>
+            </div>
+            <div class="template-info">
+              <h4>Developer</h4>
+              <p>Tech-focused &amp; minimal</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sidebar-card">
+        <h3><i class="fa-solid fa-lightbulb"></i> Tips for Success</h3>
+        <div class="tip-list">
+          <div class="tip-item"><i class="fa-solid fa-check-circle"></i> Use action verbs: "Built", "Led", "Improved"</div>
+          <div class="tip-item"><i class="fa-solid fa-check-circle"></i> Quantify impact — numbers stand out to recruiters</div>
+          <div class="tip-item"><i class="fa-solid fa-check-circle"></i> Tailor skills to the job description</div>
+          <div class="tip-item"><i class="fa-solid fa-check-circle"></i> Keep experience entries concise &amp; punchy</div>
+          <div class="tip-item"><i class="fa-solid fa-check-circle"></i> Add your LinkedIn to get 40% more responses</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
